@@ -6,6 +6,7 @@ createProductsTable = """
         product_id INTEGER PRIMARY KEY,
         name VARCHAR(200),
         category VARCHAR(100)
+
     );
 
 """
@@ -43,7 +44,7 @@ createStockTable = """
 
 createSalesTable = """
 
-    CREATE TABLE Sales (
+    CREATE TABLE SALES (
         transaction_id INTEGER PRIMARY KEY,
         sale_date DATE,
         client_id INTEGER,
@@ -67,8 +68,12 @@ createSalesTable = """
 """
 
 conn = sql.connect('commerce.db')
+cursor = conn.cursor()
 
-conn.execute(createProductsTable)
-conn.execute(createClientsTable)
-conn.execute(createStockTable)
-conn.execute(createSalesTable)
+cursor.execute(createProductsTable)
+cursor.execute(createClientsTable)
+cursor.execute(createStockTable)
+cursor.execute(createSalesTable)
+
+conn.commit()
+conn.close()
