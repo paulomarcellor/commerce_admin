@@ -14,12 +14,12 @@ def insertProductDB(product_name, product_category):
     conn.close()
     return 'Registered product'
 
-def insertClientDB(client_name, client_age, client_sex, client_marital_status,\
+def insertClientDB(client_name, client_age, client_marital_status,\
                    client_email, client_phone, client_occupation, client_preferencial_communication,\
                     client_location):
-    insertClientQuery = """ INSERT INTO CLIENTS (client_id, name, age, sex, marital_status,\
+    insertClientQuery = """ INSERT INTO CLIENTS (client_id, name, age, marital_status,\
                    email, phone, occupation, preferencial_communication,\
-                    location, average_ticket) VALUES (?,?,?,?,?,?,?,?,?,?,?)"""
+                    location, average_ticket) VALUES (?,?,?,?,?,?,?,?,?,?)"""
     conn = sql.connect('commerce.db')
     cursor = conn.cursor()
     if cursor.execute(""" SELECT MAX(client_id) FROM CLIENTS """).fetchall()[0][0] == None:

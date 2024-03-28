@@ -35,7 +35,6 @@ with tab3:
             st.header('Register Client')
             client_name=st.text_input('Name')
             client_age=st.number_input('Age')
-            client_sex=st.selectbox('Sex', ['Male','Female'])
             client_marital_status=st.selectbox('Marital Status', ['Single','Married', 'Divorced', 'Widowed'])
             client_email=st.text_input('E-mail')
             client_phone=st.text_input('Phone Number')
@@ -44,7 +43,7 @@ with tab3:
             client_location=st.text_input('Location')
             sendClient = st.form_submit_button('Register')
         if sendClient:
-            defs.insertClientDB(client_name, client_age, client_sex, client_marital_status,\
+            defs.insertClientDB(client_name, client_age, client_marital_status,\
                    client_email, client_phone, client_occupation, client_preferencial_communication,\
                     client_location)
             st.success(str(client_name) + ' Registered Successfully')

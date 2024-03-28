@@ -5,8 +5,9 @@ createProductsTable = """
     CREATE TABLE PRODUCTS (
         product_id INTEGER PRIMARY KEY,
         name VARCHAR(200),
-        category VARCHAR(100)
-
+        category VARCHAR(100),
+        cost DECIMAL(10, 2),
+        price DECIMAL(10, 2)
     );
 
 """
@@ -17,7 +18,6 @@ createClientsTable = """
         client_id INTEGER PRIMARY KEY,
         name VARCHAR(200),
         age INTEGER,
-        sex CHAR,
         marital_status VARCHAR(20),
         email VARCHAR(100),
         phone VARCHAR(20),

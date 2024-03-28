@@ -1,188 +1,179 @@
-import sqlite3
+from faker import Faker
 import random
-import string
+import sqlite3
 
-products = [
-    {"id": 1, "name": "Smartphone", "category": "Electronics"},
-    {"id": 2, "name": "Running Shoes", "category": "Sports"},
-    {"id": 3, "name": "Laptop", "category": "Electronics"},
-    {"id": 4, "name": "T-shirt", "category": "Fashion"},
-    {"id": 5, "name": "Headphones", "category": "Electronics"},
-    {"id": 6, "name": "Backpack", "category": "Accessories"},
-    {"id": 7, "name": "Sunglasses", "category": "Accessories"},
-    {"id": 8, "name": "Digital Camera", "category": "Electronics"},
-    {"id": 9, "name": "Yoga Mat", "category": "Sports"},
-    {"id": 10, "name": "Watch", "category": "Accessories"},
-    {"id": 11, "name": "Tennis Racket", "category": "Sports"},
-    {"id": 12, "name": "Dress", "category": "Fashion"},
-    {"id": 13, "name": "Gaming Console", "category": "Electronics"},
-    {"id": 14, "name": "Water Bottle", "category": "Accessories"},
-    {"id": 15, "name": "Running Shorts", "category": "Sports"},
-    {"id": 16, "name": "Portable Speaker", "category": "Electronics"},
-    {"id": 17, "name": "Wallet", "category": "Accessories"},
-    {"id": 18, "name": "Hiking Boots", "category": "Outdoor"},
-    {"id": 19, "name": "Earrings", "category": "Jewelry"},
-    {"id": 20, "name": "Tablet", "category": "Electronics"},
-    {"id": 21, "name": "Gym Bag", "category": "Accessories"},
-    {"id": 22, "name": "Baseball Cap", "category": "Fashion"},
-    {"id": 23, "name": "Cycling Helmet", "category": "Sports"},
-    {"id": 24, "name": "Wireless Mouse", "category": "Electronics"},
-    {"id": 25, "name": "Scarf", "category": "Fashion"},
-    {"id": 26, "name": "Jump Rope", "category": "Fitness"},
-    {"id": 27, "name": "USB Flash Drive", "category": "Electronics"},
-    {"id": 28, "name": "Tennis Shoes", "category": "Sports"},
-    {"id": 29, "name": "Luggage", "category": "Travel"},
-    {"id": 30, "name": "Necklace", "category": "Jewelry"},
-    {"id": 31, "name": "Wireless Earbuds", "category": "Electronics"},
-    {"id": 32, "name": "Swimwear", "category": "Fashion"},
-    {"id": 33, "name": "Bluetooth Speaker", "category": "Electronics"},
-    {"id": 34, "name": "Running Jacket", "category": "Sports"},
-    {"id": 35, "name": "Sleeping Bag", "category": "Outdoor"},
-    {"id": 36, "name": "Bracelet", "category": "Jewelry"},
-    {"id": 37, "name": "USB Charger", "category": "Electronics"},
-    {"id": 38, "name": "Camping Tent", "category": "Outdoor"},
-    {"id": 39, "name": "Sneakers", "category": "Fashion"},
-    {"id": 40, "name": "Hiking Backpack", "category": "Outdoor"},
-    {"id": 41, "name": "Smartwatch", "category": "Electronics"},
-    {"id": 42, "name": "Hoodie", "category": "Fashion"},
-    {"id": 43, "name": "Football", "category": "Sports"},
-    {"id": 44, "name": "External Hard Drive", "category": "Electronics"},
-    {"id": 45, "name": "Sunscreen", "category": "Skincare"},
-    {"id": 46, "name": "Basketball", "category": "Sports"},
-    {"id": 47, "name": "Portable Charger", "category": "Electronics"},
-    {"id": 48, "name": "Rain Jacket", "category": "Outdoor"},
-    {"id": 49, "name": "Earrings", "category": "Accessories"},
-    {"id": 50, "name": "Polarized Sunglasses", "category": "Accessories"},
-    {"id": 51, "name": "Mouse Pad", "category": "Electronics"},
-    {"id": 52, "name": "Swimsuit", "category": "Fashion"},
-    {"id": 53, "name": "Cycling Gloves", "category": "Sports"},
-    {"id": 54, "name": "Wireless Keyboard", "category": "Electronics"},
-    {"id": 55, "name": "Sleeping Pad", "category": "Outdoor"},
-    {"id": 56, "name": "Bracelet", "category": "Fashion"},
-    {"id": 57, "name": "Fitness Tracker", "category": "Electronics"},
-    {"id": 58, "name": "Yoga Pants", "category": "Sports"},
-    {"id": 59, "name": "Hiking Shoes", "category": "Outdoor"},
-    {"id": 60, "name": "Crossbody Bag", "category": "Fashion"},
-    {"id": 61, "name": "Bluetooth Headset", "category": "Electronics"},
-    {"id": 62, "name": "Waterproof Backpack", "category": "Outdoor"},
-    {"id": 63, "name": "Running Belt", "category": "Sports"},
-    {"id": 64, "name": "Ring", "category": "Jewelry"},
-    {"id": 65, "name": "Wireless Router", "category": "Electronics"},
-    {"id": 66, "name": "Cycling Shorts", "category": "Sports"},
-    {"id": 67, "name": "Solar Charger", "category": "Electronics"},
-    {"id": 68, "name": "Trekking Poles", "category": "Outdoor"},
-    {"id": 69, "name": "Baseball Glove", "category": "Sports"},
-    {"id": 70, "name": "Travel Pillow", "category": "Travel"},
-    {"id": 71, "name": "Smart Lock", "category": "Electronics"},
-    {"id": 72, "name": "Dumbbells", "category": "Fitness"},
-    {"id": 73, "name": "Camping Stove", "category": "Outdoor"},
-    {"id": 74, "name": "Leather Jacket", "category": "Fashion"},
-    {"id": 75, "name": "VR Headset", "category": "Electronics"},
-    {"id": 76, "name": "Running Socks", "category": "Sports"},
-    {"id": 77, "name": "Portable Hammock", "category": "Outdoor"},
-    {"id": 78, "name": "Hair Dryer", "category": "Beauty"},
-    {"id": 79, "name": "Cycling Jersey", "category": "Sports"},
-    {"id": 80, "name": "External Battery Pack", "category": "Electronics"},
-    {"id": 81, "name": "Rollerblades", "category": "Sports"},
-    {"id": 82, "name": "Smart Thermostat", "category": "Home"},
-    {"id": 83, "name": "Camping Chair", "category": "Outdoor"},
-    {"id": 84, "name": "Leather Bag", "category": "Fashion"},
-    {"id": 85, "name": "Desktop Computer", "category": "Electronics"},
-    {"id": 86, "name": "Hiking Pole", "category": "Outdoor"},
-    {"id": 87, "name": "Makeup Brushes", "category": "Beauty"},
-    {"id": 88, "name": "Snowboard", "category": "Sports"},
-    {"id": 89, "name": "Portable Projector", "category": "Electronics"},
-    {"id": 90, "name": "Winter Gloves", "category": "Fashion"},
-    {"id": 91, "name": "Bluetooth Earphones", "category": "Electronics"},
-    {"id": 92, "name": "Camping Lantern", "category": "Outdoor"},
-    {"id": 93, "name": "Skateboard", "category": "Sports"},
-    {"id": 94, "name": "Facial Cleanser", "category": "Skincare"},
-    {"id": 95, "name": "Fishing Rod", "category": "Outdoor"},
-    {"id": 96, "name": "Wireless Security Camera", "category": "Electronics"},
-    {"id": 97, "name": "Travel Adapter", "category": "Travel"},
-    {"id": 98, "name": "Winter Hat", "category": "Fashion"},
-    {"id": 99, "name": "Action Camera", "category": "Electronics"},
-    {"id": 100, "name": "Gaming Mouse", "category": "Electronics"}
+fake = Faker('en_US')
+
+occupations = [
+    'Engineer',
+    'Teacher',
+    'Doctor',
+    'Lawyer',
+    'Nurse',
+    'Programmer',
+    'Chef',
+    'Artist',
+    'Accountant',
+    'Writer'
 ]
 
-# Função para gerar um nome aleatório
-def generate_name():
-    vowels = "aeiou"
-    consonants = "".join(set(string.ascii_lowercase) - set(vowels))
-    return ''.join(random.choice(consonants) + random.choice(vowels) for _ in range(random.randint(4, 10))).title()
+conn = sqlite3.connect('commerce.db')
+c = conn.cursor()
 
-# Função para gerar uma idade aleatória entre 18 e 80
-def generate_age():
-    return random.randint(18, 80)
-
-# Função para gerar um sexo aleatório
-def generate_sex():
-    return random.choice(['M', 'F'])
-
-# Função para gerar um estado civil aleatório
+### CLIENTS DATABASE
 def generate_marital_status():
     return random.choice(['Single', 'Married', 'Divorced', 'Widowed'])
 
-# Função para gerar um e-mail aleatório
-def generate_email(name):
-    domains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"]
-    return f"{name.lower().replace(' ', '_')}@{random.choice(domains)}"
-
-# Função para gerar um número de telefone aleatório
-def generate_phone():
-    return ''.join(random.choices(string.digits, k=9))
-
-# Função para gerar uma ocupação aleatória
-def generate_occupation():
-    occupations = ["Engineer", "Teacher", "Doctor", "Artist", "Lawyer", "Student", "Accountant", "Entrepreneur"]
-    return random.choice(occupations)
-
-# Função para gerar uma forma de comunicação preferencial aleatória
-def generate_preferencial_communication():
-    preferences = ["Email", "Phone", "SMS", "WhatsApp"]
-    return ', '.join(random.sample(preferences, random.randint(1, len(preferences))))
-
-# Função para gerar uma localização aleatória
-def generate_location():
-    cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]
-    return random.choice(cities)
-
-# Função para gerar um ticket médio aleatório
-def generate_average_ticket():
-    return round(random.uniform(50.0, 500.0), 2)
-
-# Conexão com o banco de dados SQLite
-conn = sqlite3.connect('commerce.db')
-cursor = conn.cursor()
-
-# Gerar e inserir 1000 registros aleatórios na tabela CLIENTS
-client_id = 1
-for _ in range(1000):
-    name = generate_name()
-    age = generate_age()
-    sex = generate_sex()
+for _ in range(100):
+    name = fake.name()
+    age = random.randint(18, 90)
     marital_status = generate_marital_status()
-    email = generate_email(name)
-    phone = generate_phone()
-    occupation = generate_occupation()
-    preferencial_communication = generate_preferencial_communication()
-    location = generate_location()
-    average_ticket = generate_average_ticket()
+    email = fake.email()
+    phone = fake.phone_number()
+    occupation = random.choice(occupations)
+    preferencial_communication = fake.random_element(elements=('Email', 'Phone', 'SMS'))
+    location = fake.address()
+    average_ticket = 0
 
-    cursor.execute('''INSERT INTO CLIENTS (client_id, name, age, sex, marital_status, email, phone, occupation, preferencial_communication, location, average_ticket) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (client_id, name, age, sex, marital_status, email, phone, occupation, preferencial_communication, location, average_ticket))
-    client_id += 1
+    c.execute('''INSERT INTO CLIENTS (name, age, marital_status, email, phone, occupation, preferencial_communication, location, average_ticket)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', (name, age, marital_status, email, phone, occupation, preferencial_communication, location, average_ticket))
 
-# Insert products
-for i in products:
-    product_id = i['id']
-    product_name = i['name']
-    product_category = i['category']
-    cursor.execute('''INSERT INTO PRODUCTS (product_id, name, category) 
-                  VALUES (?, ?, ?)''', (product_id, product_name, product_category))
+## PRODUCTS DATABASE
+def generate_price(cost):
+    increase_percentage = random.uniform(1.0, 1.4)  # Aumento aleatório entre 100% e 140%
+    return round(cost * increase_percentage, 2)
 
-# Commit das alterações e fechar conexão
+# Dicionário de produtos e categorias
+products = {
+    # Electronics
+    'Smartphone': ['Electronics', 800, generate_price(800)],  # [categoria, preço bruto, função de preço]
+    'Laptop': ['Electronics', 1200, generate_price(1200)],
+    'Wireless Headphones': ['Electronics', 150, generate_price(150)],
+    'Digital Camera': ['Electronics', 500, generate_price(500)],
+    'Smart TV': ['Electronics', 1000, generate_price(1000)],
+    'Tablet': ['Electronics', 300, generate_price(300)],
+    'Bluetooth Speaker': ['Electronics', 100, generate_price(100)],
+    'Fitness Tracker': ['Electronics', 80, generate_price(80)],
+    'Gaming Console': ['Electronics', 400, generate_price(400)],
+    'Portable Charger': ['Electronics', 30, generate_price(30)],
+    
+    # Clothing
+    'T-Shirt': ['Clothing', 20, generate_price(20)],
+    'Jeans': ['Clothing', 50, generate_price(50)],
+    'Sneakers': ['Clothing', 80, generate_price(80)],
+    'Dress': ['Clothing', 70, generate_price(70)],
+    'Hoodie': ['Clothing', 40, generate_price(40)],
+    'Jacket': ['Clothing', 100, generate_price(100)],
+    'Skirt': ['Clothing', 60, generate_price(60)],
+    'Swimwear': ['Clothing', 50, generate_price(50)],
+    'Socks': ['Clothing', 10, generate_price(10)],
+    'Underwear': ['Clothing', 15, generate_price(15)],
+    
+    # Food
+    'Apples': ['Food', 2, generate_price(2)],
+    'Bread': ['Food', 3, generate_price(3)],
+    'Milk': ['Food', 4, generate_price(4)],
+    'Eggs': ['Food', 2, generate_price(2)],
+    'Chicken': ['Food', 8, generate_price(8)],
+    'Pasta': ['Food', 5, generate_price(5)],
+    'Rice': ['Food', 4, generate_price(4)],
+    'Chocolate': ['Food', 3, generate_price(3)],
+    'Ice Cream': ['Food', 6, generate_price(6)],
+    'Coffee': ['Food', 7, generate_price(7)],
+    
+    # Cosmetics
+    'Lipstick': ['Cosmetics', 15, generate_price(15)],
+    'Mascara': ['Cosmetics', 12, generate_price(12)],
+    'Foundation': ['Cosmetics', 20, generate_price(20)],
+    'Eyeliner': ['Cosmetics', 10, generate_price(10)],
+    'Shampoo': ['Cosmetics', 8, generate_price(8)],
+    'Conditioner': ['Cosmetics', 10, generate_price(10)],
+    'Face Cream': ['Cosmetics', 25, generate_price(25)],
+    'Body Lotion': ['Cosmetics', 18, generate_price(18)],
+    'Perfume': ['Cosmetics', 30, generate_price(30)],
+    'Nail Polish': ['Cosmetics', 5, generate_price(5)],
+    
+    # Furniture
+    'Sofa': ['Furniture', 500, generate_price(500)],
+    'Bed': ['Furniture', 800, generate_price(800)],
+    'Dining Table': ['Furniture', 300, generate_price(300)],
+    'Wardrobe': ['Furniture', 400, generate_price(400)],
+    'Desk': ['Furniture', 200, generate_price(200)],
+    'Bookshelf': ['Furniture', 150, generate_price(150)],
+    'Coffee Table': ['Furniture', 100, generate_price(100)],
+    'Armchair': ['Furniture', 250, generate_price(250)],
+    'Dresser': ['Furniture', 350, generate_price(350)],
+    'TV Stand': ['Furniture', 150, generate_price(150)],
+    
+    # Books
+    'Harry Potter and the Philosopher\'s Stone': ['Books', 15, generate_price(15)],
+    'To Kill a Mockingbird': ['Books', 10, generate_price(10)],
+    '1984': ['Books', 12, generate_price(12)],
+    'The Great Gatsby': ['Books', 10, generate_price(10)],
+    'The Catcher in the Rye': ['Books', 8, generate_price(8)],
+    'Lord of the Rings Trilogy': ['Books', 25, generate_price(25)],
+    'The Hobbit': ['Books', 10, generate_price(10)],
+    'Pride and Prejudice': ['Books', 8, generate_price(8)],
+    'The Hunger Games': ['Books', 10, generate_price(10)],
+    'The Da Vinci Code': ['Books', 10, generate_price(10)],
+    
+    # Toys
+    'Lego Set': ['Toys', 50, generate_price(50)],
+    'Barbie Doll': ['Toys', 30, generate_price(30)],
+    'Board Game': ['Toys', 20, generate_price(20)],
+    'Action Figure': ['Toys', 15, generate_price(15)],
+    'Dollhouse': ['Toys', 80, generate_price(80)],
+    'Puzzle': ['Toys', 10, generate_price(10)],
+    'Teddy Bear': ['Toys', 20, generate_price(20)],
+    'Play-Doh Set': ['Toys', 15, generate_price(15)],
+    'Hot Wheels Set': ['Toys', 10, generate_price(10)],
+    'Stuffed Animal': ['Toys', 15, generate_price(15)],
+    
+    # Tools
+    'Cordless Drill': ['Tools', 80, generate_price(80)],
+    'Screwdriver Set': ['Tools', 20, generate_price(20)],
+    'Hammer': ['Tools', 15, generate_price(15)],
+    'Measuring Tape': ['Tools', 10, generate_price(10)],
+    'Power Saw': ['Tools', 120, generate_price(120)],
+    'Pliers': ['Tools', 15, generate_price(15)],
+    'Wrench Set': ['Tools', 30, generate_price(30)],
+    'Toolbox': ['Tools', 25, generate_price(25)],
+    'Circular Saw': ['Tools', 100, generate_price(100)],
+    'Angle Grinder': ['Tools', 50, generate_price(50)],
+    
+    # Sporting Goods
+    'Soccer Ball': ['Sporting Goods', 20, generate_price(20)],
+    'Basketball': ['Sporting Goods', 25, generate_price(25)],
+    'Yoga Mat': ['Sporting Goods', 15, generate_price(15)],
+    'Dumbbell Set': ['Sporting Goods', 100, generate_price(100)],
+    'Tennis Racket': ['Sporting Goods', 50, generate_price(50)],
+    'Running Shoes': ['Sporting Goods', 80, generate_price(80)],
+    'Golf Clubs': ['Sporting Goods', 200, generate_price(200)],
+    'Swimming Goggles': ['Sporting Goods', 20, generate_price(20)],
+    'Cycling Helmet': ['Sporting Goods', 40, generate_price(40)],
+    'Boxing Gloves': ['Sporting Goods', 50, generate_price(50)],
+    
+    # Video Games
+    'FIFA 24': ['Video Games', 60, generate_price(60)],
+    'The Legend of Zelda: Breath of the Wild 2': ['Video Games', 70, generate_price(70)],
+    'Grand Theft Auto VI': ['Video Games', 80, generate_price(80)],
+    'Fortnite': ['Video Games', 40, generate_price(40)],
+    'Minecraft': ['Video Games', 30, generate_price(30)],
+    'Assassin\'s Creed: Valhalla': ['Video Games', 70, generate_price(70)],
+    'NBA 2K24': ['Video Games', 50, generate_price(50)],
+    'God of War: Ragnarok': ['Video Games', 80, generate_price(80)],
+    'Spider-Man 2': ['Video Games', 60, generate_price(60)],
+    'Overwatch 2': ['Video Games', 70, generate_price(70)]
+}
+
+for product in products.items():
+    name = product[0]
+    category = product[1][0]
+    cost = product[1][1]
+    price = product[1][2]
+    c.execute('''INSERT INTO PRODUCTS (name, category, cost, price)
+                        VALUES (?, ?, ?, ?)''', (name, category, cost, price))
+
+# Commit e fecha a conexão com o banco de dados
 conn.commit()
 conn.close()
-
-print("Registros inseridos com sucesso!")
