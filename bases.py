@@ -7,7 +7,8 @@ createProductsTable = """
         name VARCHAR(200),
         category VARCHAR(100),
         cost DECIMAL(10, 2),
-        price DECIMAL(10, 2)
+        price DECIMAL(10, 2),
+        amount INTEGER
     );
 
 """

@@ -1,36 +1,36 @@
 import sqlite3 as sql
 
-def insertProductDB(product_name, product_category):
-    insertProductQuery = """ INSERT INTO PRODUCTS (product_id, name, category) VALUES (?, ?, ?)"""
-    conn = sql.connect('commerce.db')
+def database(db,query,fields):
+    conn = sql.connect(db)
     cursor = conn.cursor()
-    if cursor.execute(""" SELECT MAX(product_id) FROM PRODUCTS """).fetchall()[0][0] == None:
-        product_id = 0
-    else:
-        print(cursor.execute(""" SELECT MAX(product_id) FROM PRODUCTS """).fetchall()[0][0])
-        product_id = int(cursor.execute(""" SELECT MAX(product_id) FROM PRODUCTS """).fetchall()[0][0])+1
-    cursor.execute(insertProductQuery,(product_id,product_name,product_category))
+    cursor.execute(query, fields)
     conn.commit()
     conn.close()
+
+def insertProductDB(product_name, product_category, product_cost, product_price):
+    insertProductQuery = """ INSERT INTO PRODUCTS (name, category, cost, price) VALUES (?, ?, ?, ?)"""
+    fields = product_name, product_category, product_cost, product_price
+    database('commerce.db',insertProductQuery, fields)
     return 'Registered product'
 
 def insertClientDB(client_name, client_age, client_marital_status,\
                    client_email, client_phone, client_occupation, client_preferencial_communication,\
                     client_location):
-    insertClientQuery = """ INSERT INTO CLIENTS (client_id, name, age, marital_status,\
+    insertClientQuery = """ INSERT INTO CLIENTS (name, age, marital_status,\
                    email, phone, occupation, preferencial_communication,\
-                    location, average_ticket) VALUES (?,?,?,?,?,?,?,?,?,?)"""
-    conn = sql.connect('commerce.db')
-    cursor = conn.cursor()
-    if cursor.execute(""" SELECT MAX(client_id) FROM CLIENTS """).fetchall()[0][0] == None:
-        client_id = 0
-    else:
-        print(cursor.execute(""" SELECT MAX(product_id) FROM CLIENTS """).fetchall()[0][0])
-        client_id = int(cursor.execute(""" SELECT MAX(product_id) FROM CLIENTS """).fetchall()[0][0])+1
-    average_ticket = 0
-    cursor.execute(insertClientQuery,(client_id, client_name, client_age, client_sex, client_marital_status,\
-                   client_email, client_phone, client_occupation, client_preferencial_communication,\
-                    client_location, average_ticket))
-    conn.commit()
-    conn.close()
+                    location, average_ticket) VALUES (?,?,?,?,?,?,?,?,?)"""
+    database('commerce.db',insertClientQuery, fields)
     return 'Registered client'
+
+def insertSaleDB(sale_date,client_id,product_id,sold_products,quantity_sold,unit_price,total_price,\
+                 discounts,additional_fees,payment_method,transaction_status,delivery_method,employee_id,\
+                sale_location,coupon_code_used,additional_notes):
+    
+    insertSaleQuery = """INSERT INTO SALES (sale_date,client_id,product_id,sold_products,quantity_sold,unit_price,total_price,\
+                 discounts,additional_fees,payment_method,transaction_status,delivery_method,employee_id,\
+                sale_location,coupon_code_used,additional_notes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+    
+    database('commerce.db',insertSaleQuery, fields)
+    
+    return 'Registered sale'
+    
