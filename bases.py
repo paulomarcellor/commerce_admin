@@ -8,6 +8,7 @@ createProductsTable = """
         category VARCHAR(100),
         cost DECIMAL(10, 2),
         price DECIMAL(10, 2),
+        unique_profit DECIMAL(10, 2),
         amount INTEGER
     );
 
@@ -50,9 +51,7 @@ createSalesTable = """
         sale_date DATE,
         client_id INTEGER,
         product_id INTEGER,
-        sold_products VARCHAR(255),
         quantity_sold INTEGER,
-        unit_price DECIMAL(10, 2),
         total_price DECIMAL(10, 2),
         discounts DECIMAL(10, 2),
         additional_fees DECIMAL(10, 2),
@@ -61,12 +60,16 @@ createSalesTable = """
         delivery_method VARCHAR(50),
         employee_id INTEGER,
         sale_location VARCHAR(100),
-        coupon_code_used VARCHAR(50),
-        additional_notes TEXT,
+        total_cost DECIMAL(10, 2),
+        total_profit DECIMAL(10, 2),
         FOREIGN KEY (client_id, product_id) REFERENCES PRODUCTS(client_id, product_id)
         );
 
 """
+#        unit_price DECIMAL(10, 2),
+#        sold_products VARCHAR(255),
+        # coupon_code_used VARCHAR(50),
+        # additional_notes TEXT,
 
 conn = sql.connect('commerce.db')
 cursor = conn.cursor()

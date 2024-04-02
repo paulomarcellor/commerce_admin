@@ -171,8 +171,9 @@ for product in products.items():
     category = product[1][0]
     cost = product[1][1]
     price = product[1][2]
-    c.execute('''INSERT INTO PRODUCTS (name, category, cost, price)
-                        VALUES (?, ?, ?, ?)''', (name, category, cost, price))
+    unique_profit = round((price - cost),2)
+    c.execute('''INSERT INTO PRODUCTS (name, category, cost, price, unique_profit)
+                        VALUES (?, ?, ?, ?, ?)''', (name, category, cost, price, unique_profit))
 
 # Commit e fecha a conexão com o banco de dados
 conn.commit()

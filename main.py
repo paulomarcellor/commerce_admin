@@ -1,6 +1,5 @@
 ### NEXT STEPS:
-# Create column "Profit"
-# Finish selling insert
+# Fix field "total_profit" from SALES
 
 import streamlit as st
 import sqlite3 as sql
@@ -18,9 +17,8 @@ conn = sql.connect('commerce.db')
 clients_names = pd.read_sql_query('select name, client_id from clients', conn)
 clients_ids_names = [f"{client_id} - {name}" for name, client_id in zip(clients_names['name'], clients_names['client_id'])]
 
-pruducts = pd.read_sql_query('select cost, price, name, product_id from products', conn)
-pruducts_ids_names = [f"{product_id} - {name}" for name, product_id in zip(pruducts['name'], pruducts['product_id'])]
-#products_costs_prices = 
+products = pd.read_sql_query('select * from products', conn)
+products_ids_names = [f"{product_id} - {name}" for name, product_id in zip(products['name'], products['product_id'])]
 
 # DB Close
 conn.close()
@@ -34,7 +32,7 @@ with st.sidebar:
 tab1, tab2, tab3 = st.tabs(['Dashboard','Raw Data','Management'])
 
 with tab2:
-    st.dataframe(clients_names)
+    st.dataframe(products)
 
 # MANAGEMENT
 with tab3:
@@ -48,25 +46,24 @@ with tab3:
             client = st.selectbox('Client', clients_ids_names)
             if client:
                 client_id = client.split(' - ')[0]
-            product = st.selectbox('Products', pruducts_ids_names)
+            product = st.selectbox('Products', products_ids_names)
             if product:
                 product_id = product.split(' - ')[0]
-            ## sold_products = st.
             quantity_sold = st.number_input('Amount', value=None)
-            # unit_price = st.
-            # total_price = st.
-            discounts = st.number_input('Discounts')
-            additional_fees = st.number_input('Additional Fees')
+            discounts = st.number_input('Discounts', value=None)
+            additional_fees = st.number_input('Additional Fees', value=None)
             payment_method = st.selectbox('Payment Method', ['Cash', 'Card', 'Other'])
             transaction_status = st.selectbox('Status', ['Done','Waiting for Payment'])
             delivery_method = st.selectbox('Delivery Method', ['Store', 'Delivery'])
             employee_id = st.selectbox('Seller', ['1 - Mary','2 - Joseph','3 - Paul'])
             sale_location = st.selectbox('Storage',['Malibu', 'Silicon Valley', 'Central'])
-            # coupon_code_used = st.
-            # additional_notes = st.
+            total_price = (products[products['product_id']==product_id]['price']*products[products['product_id']==product_id]['amount'])-discounts+additional_fees
+            total_profit = total_price-(products[products['product_id']==product_id]['cost']*products[products['product_id']==product_id]['amount'])
             sendSale = st.form_submit_button("Register")
         if sendSale:
-            #defs.insertSaleDB(product_name=name, product_category=category)
+            defs.insertSaleDB(sale_date=sale_date,client_id=client_id,product_id=product_id,quantity_sold=quantity_sold,total_price=total_price,\
+                 discounts=discounts,additional_fees=additional_fees,payment_method=payment_method,transaction_status=transaction_status,delivery_method=delivery_method,employee_id=employee_id,\
+                sale_location=sale_location, total_profit=total_profit)
             st.success('Success!')
     with col32:
         # Clients Form
