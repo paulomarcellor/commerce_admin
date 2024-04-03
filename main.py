@@ -1,6 +1,3 @@
-### NEXT STEPS:
-# Fix field "total_profit" from SALES
-
 import streamlit as st
 import sqlite3 as sql
 import pandas as pd
@@ -47,8 +44,8 @@ with tab3:
             if client:
                 client_id = client.split(' - ')[0]
             product = st.selectbox('Products', products_ids_names)
-            if product:
-                product_id = product.split(' - ')[0]
+            #if product:
+            product_id_sale = product.split(' - ')[0]
             quantity_sold = st.number_input('Amount', value=None)
             discounts = st.number_input('Discounts', value=None)
             additional_fees = st.number_input('Additional Fees', value=None)
@@ -57,11 +54,11 @@ with tab3:
             delivery_method = st.selectbox('Delivery Method', ['Store', 'Delivery'])
             employee_id = st.selectbox('Seller', ['1 - Mary','2 - Joseph','3 - Paul'])
             sale_location = st.selectbox('Storage',['Malibu', 'Silicon Valley', 'Central'])
-            total_price = (products[products['product_id']==product_id]['price']*products[products['product_id']==product_id]['amount'])-discounts+additional_fees
-            total_profit = total_price-(products[products['product_id']==product_id]['cost']*products[products['product_id']==product_id]['amount'])
+            total_price = ((products[products['product_id']==int(product_id_sale)]['price']*quantity_sold)-discounts+additional_fees).unique()[0]
+            total_profit = round((total_price-(products[products['product_id']==int(product_id_sale)]['cost']*quantity_sold)).unique()[0],2)
             sendSale = st.form_submit_button("Register")
         if sendSale:
-            defs.insertSaleDB(sale_date=sale_date,client_id=client_id,product_id=product_id,quantity_sold=quantity_sold,total_price=total_price,\
+            defs.insertSaleDB(sale_date=sale_date,client_id=client_id,product_id=product_id_sale,quantity_sold=quantity_sold,total_price=total_price,\
                  discounts=discounts,additional_fees=additional_fees,payment_method=payment_method,transaction_status=transaction_status,delivery_method=delivery_method,employee_id=employee_id,\
                 sale_location=sale_location, total_profit=total_profit)
             st.success('Success!')
